@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Send01
+namespace Utility
 {
     public class RabbitMQUtility
     {
