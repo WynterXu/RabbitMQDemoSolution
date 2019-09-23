@@ -8,6 +8,20 @@ namespace Send01
     {
         static void Main(string[] args)
         {
+            RabbitMQUtility RabbitMQUtility = new RabbitMQUtility();
+
+            string msg1 = "{\"RetCode\":1,\"ReturnMessage\":\"测试消息\"}";
+            RabbitMQUtility.SendMessage(msg1, "t1", "g1", "u1");
+
+            string msg2 = "{\"RetCode\":2,\"ReturnMessage\":\"测试消息\"}";
+            RabbitMQUtility.SendMessage(msg2, "t1", "g2", "u2");
+
+            string msg3 = "{\"RetCode\":3,\"ReturnMessage\":\"测试消息\"}";
+            RabbitMQUtility.SendMessage(msg3, "t1", "g2", "u3");
+        }
+
+        void send(string[] args)
+        {
             Console.WriteLine("Start Send");
             IConnectionFactory conFactory = new ConnectionFactory//创建连接工厂对象
             {
@@ -39,11 +53,15 @@ namespace Send01
                         String message = Console.ReadLine();
                         //消息内容
                         byte[] body = Encoding.UTF8.GetBytes(message);
+
+
+                        IBasicProperties properties = channel.CreateBasicProperties();
+                        properties.MessageId = Guid.NewGuid().ToString("N");
                         //发送消息
                         channel.BasicPublish(
                                                exchange: "",                //交换器名称
                                                routingKey: queueName,       //路由键
-                                               basicProperties: null,       //属性集合对象（14个成员，包含优先级、过期时间等等）
+                                               basicProperties: properties,       //属性集合对象（14个成员，包含优先级、过期时间等等）
                                                body: body                   //消息内容
                                               );
                         Console.WriteLine("Success send:" + message);
